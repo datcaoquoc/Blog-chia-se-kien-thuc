@@ -3,46 +3,35 @@ import '../css/verificationcode.css';
 import OtpInput from 'react-otp-input';
 import { useSelector, useDispatch } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
-import { postVerificationCode, clearState } from '../redux/features/auth/authSlice'
+import { postVerificationCode } from '../redux/features/auth/authSlice'
 import { DialogContainer, dialog } from 'react-dialogify';
-import { useHistory } from 'react-router-dom';
-import { useQueryParam, StringParam } from 'use-query-params';
+import { useHistory  } from 'react-router-dom';
+import { Base64 } from 'js-base64';
 function Verificationcode() {
   const dispatch = useDispatch()
   let history = useHistory();
   const [code, setCode] = useState('');
-  const [emailregister, setEmailregister] = useQueryParam('email', StringParam);
-  const { email } = useSelector((state) => state.auth);
   const { isLoading } = useSelector((state) => state.auth);
-
-
- const showDialog = () => {
+  const state = history.location.state;
+  const showDialog = () => {
     dialog.success({
-        title: 'Xác thực tài khoản thành công !',
-        text: 'Bạn đã xác thực tài khoản thành công, bây giờ bạn có thể đăng nhập và sử dụng dịch vụ của chúng tôi.',
-        btnText: 'Đồng ý',
-        btnOnClick() { history.push("/auth"); },
+      title: 'Xác thực tài khoản thành công !',
+      text: 'Bạn đã xác thực tài khoản thành công, bây giờ bạn có thể đăng nhập và sử dụng dịch vụ của chúng tôi.',
+      btnText: 'Đồng ý',
+      btnOnClick() { history.push("/auth"); },
     });
   }
 
-
-  // useEffect(() => {
-  //   dispatch(clearState());
-  // }, [dispatch]);
-
   const onVerificationCode = () => {
-    if (code.length < 6) {
-      toast.warn("vui lòng nhập đầy đủ mã OTP")
-    } else {
+      const email = state.account;
       dispatch(postVerificationCode({ code, email })).unwrap()
         .then((data) => {
-          if(data.message === 'Đã xác thực tài khoản'){
+          if (data.message === 'Đã xác thực tài khoản') {
             showDialog();
-          }else{
+          } else {
             toast.error(data.message)
           }
         })
-    }
   }
 
 
@@ -52,9 +41,9 @@ function Verificationcode() {
       {isLoading ? <div className="loader" width="500px" height="500px" ></div> : null}
       <ToastContainer />
       <div className="container-code">
-      <DialogContainer/>
+        <DialogContainer />
         <span className="title">Xác thực mã OTP</span>
-        <span className="email">Vui lòng nhập mã vừa gửi tới email: {emailregister}</span>
+        <span className="email">Vui lòng nhập mã vừa gửi tới email: {state}</span>
         <OtpInput className="input-otp"
           value={code}
           onChange={setCode}
@@ -72,7 +61,7 @@ function Verificationcode() {
         <div>
           <span>bạn chưa nhận được mã ?</span> <button className="btn-resend">Gửi lại OTP</button>
         </div>
-        <button className="btn-varicode" onClick={onVerificationCode}>Xác thực</button>
+        <button className="btn-varicode" disabled={code.length < 6} onClick={onVerificationCode}>Xác thực</button>
 
       </div>
       <div>

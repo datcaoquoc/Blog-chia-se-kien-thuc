@@ -37,11 +37,21 @@ const verifiCode = (code, email) => {
   });
 }
 
+const renderOtp = (email) => {
+  return axios
+  .post(API_URL + "auth/resendcode", {
+    email,
+  }).then((response) => {
+    return response.data;
+  });
+}
+
 const authService = {
   register,
   login,
   logout,
-  verifiCode
+  verifiCode,
+  renderOtp
 };
 
 export default authService;

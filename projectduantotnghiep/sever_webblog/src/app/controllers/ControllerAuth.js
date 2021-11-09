@@ -92,7 +92,8 @@ export default {
         }
     },
     async resendcode(req,res) {
-        const emailresendcode = req.query.email;
+        const emailresendcode = req.body.email;
+        console.log(emailresendcode)
         const code = codegeneration();
         const results = await User.findOne({ email: emailresendcode });
         if(results){

@@ -96,7 +96,8 @@
 /* element.style{
     width: 50px;
 } */
-.btn-varicode{
+.btn-varicode:enabled{
+    pointer-events: stroke;
     margin-top: 20px;
 	border-radius: 20px;
 	border: 1px solid rgb(214, 210, 210);
@@ -109,8 +110,26 @@
     background-color: #02234c;
     margin: 20px 10px;
     transition: all 0.5s ease-in-out;
+    
+}
+.btn-varicode:disabled{
+    pointer-events: stroke;
+    margin-top: 20px;
+	border-radius: 20px;
+	border: 1px solid rgb(214, 210, 210);
+	color: #02234c;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 12px 45px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+    background-color: #436997;
+    margin: 20px 10px;
+    transition: all 0.5s ease-in-out;
+    opacity: 0.5 !important;
 }
 .btn-varicode:hover{
 	color: #02234c;
-	background-color: transparent;
+	background-color: #436997;
 }
+

@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/auth.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { postLogin, clearState, postRegister } from '../redux/features/auth/authSlice';
+import { postLogin, clearState, postRegister,postRenderOtp } from '../redux/features/auth/authSlice';
 import { Formik, Form, Field } from 'formik';
 import { validateAuth } from '../commons/validate/validateAuth';
 import Button from '@mui/material/Button';
@@ -28,8 +28,16 @@ function Login() {
   }, [dispatch]);
 
   const onBtnDialog = () => {
-    
-    history.push(`/verificationcode?email=${email}`);
+    console.log()
+    dispatch(postRenderOtp({ email })).unwrap()
+      .then((data) => {
+        if (data.message === 'Đã gửi mã otp xác thực') {
+          history.push({
+            pathname:'/verificationcode',
+            state: { account: email },
+        })
+        }
+      })
   }
 
   const onRegister = (values) => {
@@ -37,7 +45,10 @@ function Login() {
     dispatch(postRegister({ name, email, password })).unwrap()
       .then((data) => {
         if (data.message === 'đăng kí thành công') {
-          history.push(`/verificationcode?email=${email}`);
+          history.push({
+            pathname:'/verificationcode',
+            state: { account: email },
+        })
         }
       })
   }

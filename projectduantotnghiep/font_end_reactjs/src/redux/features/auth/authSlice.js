@@ -34,6 +34,17 @@ export const postVerificationCode = createAsyncThunk(
     }
   }
 );
+export const postRenderOtp = createAsyncThunk(
+  "auth/resendcode",
+  async ({ email }, thunkAPI) => {
+    try {
+      const data = await authService.renderOtp(email);
+      return data;
+    } catch (error) {
+      return error.message;
+    }
+  }
+);
 
 
 
@@ -92,6 +103,15 @@ export const authSlice = createSlice({
       state.isLoading = true
     },
     [postVerificationCode.fulfilled]: (state, { payload }) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.message = payload.message;
+      return state;
+    },
+    [postRenderOtp.pending]: (state) => {
+      state.isLoading = true
+    },
+    [postRenderOtp.fulfilled]: (state, { payload }) => {
       state.isLoading = false;
       state.isSuccess = true;
       state.message = payload.message;
