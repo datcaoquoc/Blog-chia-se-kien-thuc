@@ -7,9 +7,11 @@ export default {
             const dataPost = req.body;
             const dataUser = req.user;
             let createdat = null;
+            console.log(dataPost)
             const data = new Post({
                 content: dataPost.content,
                 title: dataPost.title,
+                description: dataPost.description,
                 category: dataPost.category,
                 imagepost: dataPost.imagepost,
                 poster: dataUser._id,
@@ -20,6 +22,7 @@ export default {
                 const data1 = new Post({
                     content: dataPost.content,
                     title: dataPost.title,
+                    description: dataPost.description,
                     category: dataPost.category,
                     imagepost: dataPost.imagepost,
                     poster: dataUser._id,
@@ -94,12 +97,17 @@ export default {
             })
 
     },
-    async uploadImg(req, res, next) {
+    async uploadImg(req, res) {
         try {
-            const path = `http://localhost:3800/imagepost/${req.file.filename}`;
-            return new BaseResponse({ statusCode: 200, data: { urlimagepost: path } }).return(res);
+                return new BaseResponse({ 
+                    statusCode: 200,
+                     data: { message: 'success', urlimagepost: `http://localhost:3800/imagepost/${req.file.filename}` }, 
+                }).return(res);
         } catch (error) {
-            next(error)
+            new BaseError({
+                statusCode: 400,
+                errors: error,
+            })
         }
     },
 

@@ -14,9 +14,31 @@ export const postLogin = createAsyncThunk(
 );
 export const postRegister = createAsyncThunk(
   "auth/register",
-  async ({ name ,email, password }, thunkAPI) => {
+  async ({ name, email, password }, thunkAPI) => {
     try {
       const data = await authService.register(name, email, password);
+      return data;
+    } catch (error) {
+      return error.message;
+    }
+  }
+);
+export const postrftoken = createAsyncThunk(
+  "auth/rftoken",
+  async (thunkAPI) => {
+    try {
+      const data = await authService.rftoken();
+      return data;
+    } catch (error) {
+      return error.message;
+    }
+  }
+);
+export const postLogout = createAsyncThunk(
+  "auth/logout",
+  async (thunkAPI) => {
+    try {
+      const data = await authService.logout();
       return data;
     } catch (error) {
       return error.message;
@@ -52,6 +74,7 @@ export const authSlice = createSlice({
   name: "auth",
   initialState: {
     email: "",
+    isLogin: "",
     isLoading: false,
     isSuccess: false,
     isError: false,
@@ -91,6 +114,9 @@ export const authSlice = createSlice({
       state.isSuccess = true;
       state.message = payload.message;
       state.email = payload.email;
+      if (state.message === 'đăng nhập thành công') {
+        state.isLogin = true;
+      }
       return state;
     },
     [postLogin.rejected]: (state) => {
@@ -108,6 +134,7 @@ export const authSlice = createSlice({
       state.message = payload.message;
       return state;
     },
+    // re-render mã code
     [postRenderOtp.pending]: (state) => {
       state.isLoading = true
     },
@@ -117,7 +144,24 @@ export const authSlice = createSlice({
       state.message = payload.message;
       return state;
     },
+    [postrftoken.fulfilled]: (state, { payload }) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.message = payload.message;
+      return state;
+    },
 
+    // logout
+    [postLogout.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [postLogout.fulfilled]: (state, { payload }) => {
+      state.isLogin = false;
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.message = payload.message;
+      return state;
+    },
   },
 });
 export const { clearState } = authSlice.actions;

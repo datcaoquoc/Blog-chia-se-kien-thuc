@@ -10,6 +10,7 @@ routerAuth.post("/generationToken",AuthController.generationToken)
 routerAuth.post("/forgotpassword",AuthController.forgotPassword)
 routerAuth.post("/checkcodeforgotpassword",AuthController.checkCodeForgotPassword)
 routerAuth.post("/resendcode",AuthController.resendcode)
+routerAuth.post("/logout",AuthController.logout)
 
 
 export default routerAuth;

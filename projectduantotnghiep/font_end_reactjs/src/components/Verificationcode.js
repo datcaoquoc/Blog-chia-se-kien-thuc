@@ -12,7 +12,7 @@ function Verificationcode() {
   let history = useHistory();
   const [code, setCode] = useState('');
   const { isLoading } = useSelector((state) => state.auth);
-  const state = history.location.state;
+  const email = history.location.state.account;
   const showDialog = () => {
     dialog.success({
       title: 'Xác thực tài khoản thành công !',
@@ -21,9 +21,10 @@ function Verificationcode() {
       btnOnClick() { history.push("/auth"); },
     });
   }
-
+  useEffect(() => {
+    console.log(email)
+  },[])
   const onVerificationCode = () => {
-      const email = state.account;
       dispatch(postVerificationCode({ code, email })).unwrap()
         .then((data) => {
           if (data.message === 'Đã xác thực tài khoản') {
@@ -43,7 +44,7 @@ function Verificationcode() {
       <div className="container-code">
         <DialogContainer />
         <span className="title">Xác thực mã OTP</span>
-        <span className="email">Vui lòng nhập mã vừa gửi tới email: {state}</span>
+        <span className="email">Vui lòng nhập mã vừa gửi tới email: {email}</span>
         <OtpInput className="input-otp"
           value={code}
           onChange={setCode}

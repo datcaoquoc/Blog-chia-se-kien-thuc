@@ -1,9 +1,7 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:3800/";
+import { instance } from "../../../commons/axios/axiosConfig";
 
 const register = (name, email, password) => {
-  return axios.post(API_URL + "auth/register", {
+  return instance.post("auth/register", {
     name,
     email,
     password,
@@ -12,24 +10,32 @@ const register = (name, email, password) => {
   });
 };
 
-const login = (email, password) => {
-  return axios
-    .post(API_URL + "auth/login", {
-      email,
-      password,
-    },{withCredentials: true, credentials: 'include'})
+const rftoken = () => {
+  return instance.post("auth/generationToken")
+    .then((response) => {
+      return response.data;
+    });
+};
+const logout = () => {
+  return instance.post("auth/logout")
     .then((response) => {
       return response.data;
     });
 };
 
-const logout = () => {
-  localStorage.removeItem("user");
+
+const login = (email, password) => {
+  return instance.post("auth/login", {
+    email,
+    password,
+  }, { withCredentials: true, credentials: 'include' })
+    .then((response) => {
+      return response.data;
+    });
 };
 
 const verifiCode = (code, email) => {
-  return axios
-  .post(API_URL + "auth/verificationcodes", {
+  return instance.post("auth/verificationcodes", {
     code,
     email,
   }).then((response) => {
@@ -38,8 +44,7 @@ const verifiCode = (code, email) => {
 }
 
 const renderOtp = (email) => {
-  return axios
-  .post(API_URL + "auth/resendcode", {
+  return instance.post("auth/resendcode", {
     email,
   }).then((response) => {
     return response.data;
@@ -49,9 +54,10 @@ const renderOtp = (email) => {
 const authService = {
   register,
   login,
-  logout,
   verifiCode,
-  renderOtp
+  renderOtp,
+  rftoken,
+  logout
 };
 
 export default authService;

@@ -131,17 +131,17 @@ export default {
                                 if (data.is_available) {
                                     let tokenAccsess = endcodeToken.encodeTokenAccsess(data._id);
                                     let tokenRefresh = endcodeToken.encodeTokenRefresh(data._id);
-                                    res.cookie('AT', tokenAccsess, {
+                                    res.cookie('at', tokenAccsess, {
                                         expires: new Date(Date.now() + 1000 * 60 * 1),                                    
                                         httpOnly: true,
                                     });
-                                    res.cookie('RT', tokenRefresh, {
+                                    res.cookie('rt', tokenRefresh, {
                                         expires: new Date(Date.now() + 1000 * 60 *14400),                                    
                                         httpOnly: true,
                                     });
                                     return new BaseResponse({
                                         statusCode: 200,
-                                        data: { message: 'đăng nhập thành công'},
+                                        data: { message: 'đăng nhập thành công', tokenAccsess},
                                     }).return(res);
                                 } else {
                                     return new BaseResponse({
@@ -179,20 +179,34 @@ export default {
     },
     // refreshtoken
     async generationToken(req, res, next) {
-        const refreshToken = req.headers.authorization.split(' ')[1];
-        Jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decode) => {
-            if (err) {
-                res.status(400).json({
-                    err
-                })
-            } else {
-                let newTokenAccess = endcodeToken.encodeTokenAccsess(decode.sub)
-                new BaseResponse({
-                    statusCode: 200,
-                    data: { newTokenAccess },
-                }).return(res);
-            }
-        })
+        const refreshToken = req.cookies.rt;
+        console.log(refreshToken)
+        if(refreshToken === undefined || refreshToken === null){
+            new BaseResponse({
+                statusCode: 200,
+                data: { message: "not authorized"}
+            }).return(res);
+        }
+        else{
+            Jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decode) => {
+                if (err) {
+                    new BaseResponse({
+                        statusCode: 200,
+                        data: { message: "not authorized"}
+                    }).return(err);
+                } else {
+                    let newTokenAccess = endcodeToken.encodeTokenAccsess(decode.sub)
+                    res.cookie('at', newTokenAccess, {
+                        expires: new Date(Date.now() + 1000 * 60 * 1),                                    
+                        httpOnly: true,
+                    });
+                    new BaseResponse({
+                        statusCode: 200,
+                        data: { message: "create new token"}
+                    }).return(res);
+                }
+            })
+        }
     },
 
     //quên mật khẩu
@@ -260,6 +274,15 @@ export default {
                 error: err
             })
         })
+    },
+
+    async logout(req, res){
+        res.clearCookie('rt');
+        res.clearCookie('at');
+        return new BaseResponse({
+            statusCode: 200,
+            data: { message: 'logout success'},
+        }).return(res);
     }
 
 

@@ -9,8 +9,15 @@ const keyUnlockToken = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.ACCESS_TOKEN_SECRET,
 };
+var cookieExtractor = function(req) {
+    var token = `${req.cookies.at}`;
+    return token;
+  };
+  var opts = {};
+  opts.jwtFromRequest = cookieExtractor; // check token in cookie
+  opts.secretOrKey = process.env.ACCESS_TOKEN_SECRET;
 
-const strategy = new Strategy(keyUnlockToken, async (jwt_payload, done) => {
+const strategy = new Strategy(opts, async (jwt_payload, done) => {
     try {
         User.findById(jwt_payload.sub, function(err, user) {
             if (err) {
@@ -20,7 +27,6 @@ const strategy = new Strategy(keyUnlockToken, async (jwt_payload, done) => {
                 return done(null, user);
             } else {
                 return done(null, user);
-                // or you could create a new account
             }
         })
 

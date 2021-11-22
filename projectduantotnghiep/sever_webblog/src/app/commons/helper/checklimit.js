@@ -1,7 +1,7 @@
 const limit = (req, res, next) =>{
-    const limit = req.query.limit;
+    const limit = req.query.limit || req.body.limit;
     if(limit === '' || limit === undefined){
-        req.limit = 5;
+        req.limit = 4;
         return next();
     }else{
         req.limit = limit;

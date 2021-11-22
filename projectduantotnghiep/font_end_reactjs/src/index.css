@@ -1,11 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Dongle:wght@300&family=Montserrat:ital,wght@1,900&family=Nunito:wght@300&display=swap');
 body {
   margin: 0;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Nunito', sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
 }
 
 code {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Nunito', sans-serif;
 }

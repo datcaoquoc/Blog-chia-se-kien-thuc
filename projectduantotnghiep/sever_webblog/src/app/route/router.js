@@ -17,8 +17,6 @@ function route(app){
     app.use('/admin',authenticate,checkRole.isAdmin,routerAdmin);
     app.use('/censor',authenticate, checkRole.isCensor,routerCensor)
     app.use('/',routerFreedom)
-    
-
 }
 export default route;
 

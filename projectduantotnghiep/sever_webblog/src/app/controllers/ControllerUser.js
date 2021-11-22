@@ -43,9 +43,10 @@ export default {
         const idUser = req.user._id;
         await User.findOne({ _id: idUser }, async (err, data) => {
             if (data !== null) {
+                // console.log(data)
                 return new BaseResponse({
                     statusCode: 200,
-                    data: { message: 'success', data },
+                    data: { message: 'success', results : data },
                 }).return(res)
             }
             else {

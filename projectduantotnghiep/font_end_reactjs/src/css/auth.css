@@ -1,39 +1,22 @@
 
-/* @import url('https://fonts.googleapis.com/css?family=Play:400,700&amp;subset=vietnamese'); */
-
-
-
 * {
 	box-sizing: border-box;
 }
-
-/* body {
-	background-image: url("https://img2.thuthuat123.com/uploads/2020/03/17/hinh-nen-powerpoint-don-gian_115856634.jpg");
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	font-family: 'Play', sans-serif;
-	height: 100vh;
-} */
 .spiner{
 	margin-right: 10px;
 	width: 137px;
 	height: 45px;
 }
 .anhnen{
-	/* background: url(../access/background1.jpg); */
-	background-image: linear-gradient(to bottom right, #2159a3 , #6eb3f4);
+	background-image: linear-gradient(to bottom right, #2fa1b3 , #c0c7c9);
 	background-size: 110%;
 	background-repeat: no-repeat;
-	/* background-color: rgba(189, 189, 189, 0.795); */
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
 	font-family: 'Nunito', sans-serif;
 	height: 100vh;
-	/* width: 100%; */
 }
 .fp-loader{
 	position: absolute;
@@ -156,10 +139,6 @@ button.ghost {
 }
 .container {
 	background-color: #e4e4e4;
-	/* background: url(../access/decoBg-1.jpg);
-	background-size: 46%;
-	background-repeat: no-repeat; */
-	/* background-color: rgb(216, 216, 216); */
 	border-radius: 5px;
   	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
 			0 10px 10px rgba(0,0,0,0.22);

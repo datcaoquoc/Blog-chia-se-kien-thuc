@@ -20,8 +20,9 @@ app.use('/imageuser',express.static('uploads/imageuser'));
 database.connect();
 app.use(express.json());
 app.use(cors({ origin:true, credentials:true }));
-app.use(passport.initialize());
 passport.use('jwt', strategy);
+app.use(passport.initialize());
+
 app.use(cookieParser())
 route(app);
 app.use(errorCatcher, errorHandler);

@@ -5,8 +5,9 @@ import '../css/auth.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { postLogin, clearState, postRegister,postRenderOtp } from '../redux/features/auth/authSlice';
+import { ToastContainer, toast } from 'react-toastify';
 import { Formik, Form, Field } from 'formik';
-import { validateAuth } from '../commons/validate/validateAuth';
+import { valid } from '../commons/validate/validateForm';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -18,17 +19,18 @@ function Login() {
   let history = useHistory();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const { message } = useSelector((state) => state.auth);
   const { email } = useSelector((state) => state.auth);
   const { isLoading } = useSelector((state) => state.auth);
-
-
+  const { isLogin } = useSelector((state) => state.auth);
+  
   useEffect(() => {
-    dispatch(clearState());
-  }, [dispatch]);
+    if(isLogin){
+      history.push('/')
+    }
+  }, []);
 
   const onBtnDialog = () => {
-    console.log()
+    console.log(email)
     dispatch(postRenderOtp({ email })).unwrap()
       .then((data) => {
         if (data.message === 'Đã gửi mã otp xác thực') {
@@ -44,11 +46,16 @@ function Login() {
     const { name, email, password } = values;
     dispatch(postRegister({ name, email, password })).unwrap()
       .then((data) => {
-        if (data.message === 'đăng kí thành công') {
-          history.push({
-            pathname:'/verificationcode',
-            state: { account: email },
-        })
+        switch (data.message) {
+          case 'đăng kí thành công':
+            history.push({
+              pathname:'/verificationcode',
+              state: { account: email },
+          })
+            break;
+          default :
+            toast.warn(data.message)
+            break;
         }
       })
   }
@@ -60,10 +67,14 @@ function Login() {
       .then((data) => {
         switch (data.message) {
           case 'đăng nhập thành công':
+            // localStorage.setItem("islogin", true)
             history.push("/");
             break;
           case '(*) tài khoản chưa được xác thực':
             setOpen(true)
+            break;
+          default :
+            toast.warn(data.message)
             break;
         }
       })
@@ -97,9 +108,10 @@ function Login() {
           <Button className="btn-dialog" onClick={onBtnDialog} >Xác thực tài khoản</Button>
         </DialogActions>
       </Dialog>
+      
       <div className="anhnen">
         {isLoading ? <div width="500px" height="500px" className="fp-loader" /> : null}
-
+        <ToastContainer />
         <div className="container" id="container">
 
           <div className="right-container"></div>
@@ -108,7 +120,7 @@ function Login() {
             <div className="form-container sign-in-container">
               <Formik
                 initialValues={{ email: '', password: '' }}
-                validationSchema={validateAuth.loginValid}
+                validationSchema={valid.loginValid}
                 onSubmit={values => {
                   onlogin(values)
                 }}
@@ -141,7 +153,6 @@ function Login() {
                       <span>Nếu chưa có tài khoản hãy </span>
                       <button className="click-form-register" type="reset" onClick={singup} >  Đăng kí tài khoản</button>
                     </div>
-                    <span className='error-result'>{message}</span>
                   </Form>
                 )}
               </Formik>
@@ -151,7 +162,7 @@ function Login() {
             <div className="form-container sign-up-container">
               <Formik
                 initialValues={{ name: '', email: '', password: '', cfpassword: '' }}
-                validationSchema={validateAuth.registerValid}
+                validationSchema={valid.registerValid}
                 onSubmit={values => {
                   onRegister(values)
                 }}
@@ -198,7 +209,6 @@ function Login() {
                       <span>Bạn đã có tài khoản ? </span>
                       <button className="click-form-register" type="reset" onClick={signin} >  Đăng nhập</button>
                     </div>
-                    <span className='error-result-register'>{message}</span>
                   </Form>
                 )}
               </Formik>

@@ -23,7 +23,7 @@ const fileFilter = (dir) =>
     } else {
         cb(
             new BaseError({
-              statusCode: 400,
+              statusCode: 403,
               error: { picture: 'không đúng định dạng ảnh' },
             }), false
           );
